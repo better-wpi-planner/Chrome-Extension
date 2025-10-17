@@ -55,15 +55,14 @@ const addProfessorPopup = (professorName, profData) => {
 };
 
 var body = document.getElementsByTagName("body")[0];
+var hasObserved = false;
 
 const observer = new MutationObserver((mutations) => {
   console.log("Mutation detected" + mutations);
   const topScheduleButton = document.getElementsByClassName(
     "sched-TopButtonEnabled"
   )[3];
-  if (topScheduleButton && !topScheduleButton.dataset.listenerAttached) {
-    topScheduleButton.dataset.listenerAttached = "true";
-
+  if (!hasObserved) {
     const topCoursesButton = document.getElementsByClassName(
       "sched-TopButtonEnabled"
     )[0];
@@ -71,6 +70,10 @@ const observer = new MutationObserver((mutations) => {
     topCoursesButton.addEventListener("click", () => {
       filter(0);
     });
+    hasObserved = true;
+  }
+  if (topScheduleButton && !topScheduleButton.dataset.listenerAttached) {
+    topScheduleButton.dataset.listenerAttached = "true";
 
     topScheduleButton.addEventListener("click", () => {
       const courseItems = document.getElementsByClassName(
@@ -166,7 +169,7 @@ function filter(num) {
 function setupFilterButtons() {
   const targetElement = document.getElementsByClassName("GOWDEH0CJI")[1];
 
-  targetElement.innerHTML = "";
+  targetElement.innerHTML = " ";
   targetElement.parentElement.style.overflow = "visible";
   targetElement.parentElement.parentElement.children[3].style.inset =
     "0px 0px 0px 530px";
@@ -178,7 +181,7 @@ function setupFilterButtons() {
   textLabel.style.color = "white";
   targetElement.appendChild(textLabel);
 
-  targetElement.style.paddingTop = "7px";
+  targetElement.style.paddingTop = "3px";
   targetElement.style.display = "flex";
   targetElement.style.alignItems = "center";
 
@@ -199,8 +202,8 @@ function setupFilterButtons() {
     const button = document.createElement("button");
     button.textContent = label;
 
-    button.style.margin = "0 5px";
-    button.style.padding = "8px 12px";
+    button.style.margin = "0 3px";
+    button.style.padding = "3px 12px";
     button.style.border = "2px solid #ccc";
     button.style.borderRadius = "20px";
     button.style.cursor = "pointer";
