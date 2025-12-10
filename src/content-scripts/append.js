@@ -57,19 +57,19 @@ const addProfessorPopup = (professorName, profData) => {
 var body = document.getElementsByTagName("body")[0];
 var hasObserved = false;
 
-const observer = new MutationObserver((mutations) => {
-  console.log("Mutation detected" + mutations);
+const observer = new MutationObserver(() => {
   const topScheduleButton = document.getElementsByClassName(
     "sched-TopButtonEnabled"
-  )[3];
+  )[0].parentElement.children[3];
+  
   if (!hasObserved) {
     const topCoursesButton = document.getElementsByClassName(
       "sched-TopButtonEnabled"
     )[0];
     setupFilterButtons();
-    topCoursesButton.addEventListener("click", () => {
-      filter(0);
-    });
+    // topCoursesButton.addEventListener("click", () => {
+    //   filter(4);
+    // });
     hasObserved = true;
   }
   if (topScheduleButton && !topScheduleButton.dataset.listenerAttached) {
@@ -146,12 +146,29 @@ function removeParenthesesAtEnd(str) {
   return str.replace(/\s*\(.*\)$/, "");
 }
 
+function filter_text(str) {
+  courseList = document.getElementsByClassName("courseList")[1].children;
+  filter_string = str.toLowerCase();
+
+  for (var i = 0; i < courseList.length; i++) {
+    var child = courseList[i];
+    const courseName = child.children[3].innerText.toLowerCase() + child.children[1].innerText.toLowerCase();
+
+    if (!courseName.includes(filter_string)) {
+      child.style.display = "none";
+    } else{
+      child.style.display = "";
+    }
+  }
+}
+
 function filter(num) {
   courseList = document.getElementsByClassName("courseList")[1].children;
   if (num == 4) {
     for (var i = 0; i < courseList.length; i++) {
       courseList[i].style.display = "";
     }
+    return;
   }
 
   for (var i = 0; i < courseList.length; i++) {
@@ -160,7 +177,6 @@ function filter(num) {
     const y = x[num].getAttribute("title");
 
     if (y[0] == "C") {
-      console.log(y[0]);
       child.style.display = "none";
     }
   }
@@ -172,13 +188,15 @@ function setupFilterButtons() {
   targetElement.innerHTML = " ";
   targetElement.parentElement.style.overflow = "visible";
   targetElement.parentElement.parentElement.children[3].style.inset =
-    "0px 0px 0px 530px";
+    "0px 0px 0px 727px"; // wysi
   const textLabel = document.createElement("span");
-  textLabel.textContent = "Filter Term";
-  textLabel.style.marginLeft = "15px";
+  textLabel.textContent = "Filter Term ";
+  textLabel.style.marginLeft = "0px";
+  textLabel.style.marginRight = "4px";
   textLabel.style.fontSize = "16px";
   textLabel.style.whiteSpace = "nowrap";
   textLabel.style.color = "white";
+  textLabel.style.fontWeight = 'bold'
   targetElement.appendChild(textLabel);
 
   targetElement.style.paddingTop = "3px";
@@ -205,7 +223,7 @@ function setupFilterButtons() {
     button.style.margin = "0 3px";
     button.style.padding = "3px 12px";
     button.style.border = "2px solid #ccc";
-    button.style.borderRadius = "20px";
+    button.style.borderRadius = "10px";
     button.style.cursor = "pointer";
     Object.assign(button.style, defaultStyle);
 
@@ -227,4 +245,15 @@ function setupFilterButtons() {
     targetElement.appendChild(button);
     buttons.push(button);
   });
+  const text = document.createElement("input");
+  text.type = 'text'
+  text.id = 'filterText'
+  text.placeholder = 'Filter the results'
+  text.style.padding = "2px 12px"
+  text.style.margin = "5px 5px"
+  text.addEventListener("input", () => {
+    filter_text(text.value)
+  });
+  targetElement.appendChild(text);
+  
 }
